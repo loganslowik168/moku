@@ -49,7 +49,7 @@ def main():
             # Send conversation to OpenAI API using the OpenAI class
             
             response = AIClient.chat.completions.create(
-                model="gpt-4",
+                model="gpt-4o-mini",
                 messages=conversation,
             )
 
