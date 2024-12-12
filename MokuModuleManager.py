@@ -17,13 +17,13 @@ class MokuModuleManager:
         for file in moduleFiles:
             moduleName = file.stem
             module = importlib.import_module(f"modules.{moduleName}")
-            print(f"Attempting to load module: modules.{moduleName}")
             for attribute in dir(module):
                 attr = getattr(module, attribute)
                 try:
-                    print(attr.NAME)
+                    print(f"Detected module: {attr.NAME}")
                 except:
-                    print("bad")
+                    pass
+
                 if isinstance(attr, type) and issubclass(attr, MokuModule) and attr is not MokuModule:
                     self.modules[attr.NAME] = attr()
 
