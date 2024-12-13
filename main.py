@@ -27,15 +27,15 @@ def main():
     MMM = MokuModuleManager(modulesDirectory="modules")
     MMM.LoadModules()
     modules = input("Enter desired modules (comma delimited): ").split(',')
-    try:
-        MMM.CheckModuleConflicts(modules)
-    except ValueError as ve:
-        print(ve)
-        #badModule = ve[7:-14]
-        #print(f"BAD MODULE={badModule}")
-        return
-    MMM.RunModules(modules)
-
+    if modules != ['']:
+        try:
+            MMM.CheckModuleConflicts(modules)
+        except ValueError as ve:
+            print(ve)
+        MMM.RunModules(modules)
+    else:
+        print("No modules selected.  Continuing without modules")
+    
     conversation = [{"role": "system", "content": "You are Hatsune Miku."}]
     AIClient = OpenAI(api_key=secrets.OPENAI_API_KEY)  # Initialize your OpenAI instance if needed
     while True:

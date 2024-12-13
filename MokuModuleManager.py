@@ -28,15 +28,27 @@ class MokuModuleManager:
                     self.modules[attr.NAME] = attr()
 
     def CheckModuleConflicts(self, modules):
-        for m in modules:
+        errors = []
+        i = 0
+        while i < len(modules):
+            m = modules[i]
             module = self.modules.get(m)
             if not module:
-                raise ValueError(f"Module {m} not found!")
+                modules.pop(i)
+                errors.append(f"Module {m} not found!")
+                continue
             for conflict in module.conflicts:
                 if conflict in modules:
-                    raise ValueError(f"Conflict detected: {m} conflicts with {conflict}")
+                    modules.pop(i)
+                    errors.append(f"Conflict detected: {m} conflicts with {conflict}")
+                    break
+            else:
+                i += 1
+
+        raise ValueError("\n".join(errors))
 
     def RunModules(self, modules):
+        print(f"Booting with {len(modules)} modules.")
         for m in modules:
             module = self.modules[m]
             module.Run()
