@@ -48,7 +48,11 @@ class MokuModuleManager:
         raise ValueError("\n".join(errors))
 
     def RunModules(self, modules):
+        systemMessages = []
         print(f"Booting with {len(modules)} modules.")
         for m in modules:
             module = self.modules[m]
+            if hasattr(module, 'SYSTEM_MESSAGE'):
+                systemMessages.append(module.SYSTEM_MESSAGES)
             module.Run()
+        return systemMessages

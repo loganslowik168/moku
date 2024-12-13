@@ -32,12 +32,18 @@ def main():
             MMM.CheckModuleConflicts(modules)
         except ValueError as ve:
             print(ve)
-        MMM.RunModules(modules)
+        sysMsgs = MMM.RunModules(modules)
     else:
+        sysMsgs = []
         print("No modules selected.  Continuing without modules")
     
-    conversation = [{"role": "system", "content": "You are Hatsune Miku."}]
-    AIClient = OpenAI(api_key=secrets.OPENAI_API_KEY)  # Initialize your OpenAI instance if needed
+    msgText = ". ".join(sysMsgs) + "."
+    systemMessage = {"role": "system", "content": msgText}
+
+    conversation = [systemMessage]
+    print(f"Conversation = {conversation}")
+
+    AIClient = OpenAI(api_key=secrets.OPENAI_API_KEY)
     while True:
         userInput = input("You: ")
         if userInput.lower() == "exit()":
@@ -46,7 +52,6 @@ def main():
         conversation.append({"role": "user", "content": userInput})
 
         try:
-            # Send conversation to OpenAI API using the OpenAI class
             
             response = AIClient.chat.completions.create(
                 model="gpt-4o-mini",
