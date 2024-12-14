@@ -22,17 +22,20 @@ def main():
 
     print(completion.choices[0].message.content)
     '''
-
+    standardSystemMessage = {"role": "system", "content": "In order to exit the program, the user must type 'exit()'.  If you think the user is trying to exit the program, remind them of this command."}
     # Load modules
     MMM = MokuModuleManager(modulesDirectory="modules")
     MMM.LoadModules()
     modules = input("Enter desired modules (comma delimited): ").split(',')
+    ASSISTANT_NAME = "Assistant"
     if modules != ['']:
         try:
             MMM.CheckModuleConflicts(modules)
         except ValueError as ve:
             print(ve)
-        sysMsgs = MMM.RunModules(modules)
+        # Gather information for modules from the run command
+        
+        [sysMsgs, ASSISTANT_NAME] = MMM.RunModules(modules)
     else:
         sysMsgs = []
         print("No modules selected.  Continuing without modules")
@@ -40,7 +43,7 @@ def main():
     msgText = ". ".join(sysMsgs) + "."
     systemMessage = {"role": "system", "content": msgText}
 
-    conversation = [systemMessage]
+    conversation = [systemMessage, standardSystemMessage]
     print(f"Conversation = {conversation}")
 
     AIClient = OpenAI(api_key=secrets.OPENAI_API_KEY)
@@ -60,7 +63,7 @@ def main():
 
             # Extract and display assistant's response
             AIResponse = response.choices[0].message.content
-            print(f"Assistant: {AIResponse}")
+            print(f"{ASSISTANT_NAME}: {AIResponse}")
 
             # Add assistant's response to the conversation
             conversation.append({"role": "assistant", "content": AIResponse})

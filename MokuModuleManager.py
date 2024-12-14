@@ -49,10 +49,14 @@ class MokuModuleManager:
 
     def RunModules(self, modules):
         systemMessages = []
+        assistantName = "Assistant"
         print(f"Booting with {len(modules)} modules.")
         for m in modules:
             module = self.modules[m]
             if hasattr(module, 'SYSTEM_MESSAGE'):
-                systemMessages.append(module.SYSTEM_MESSAGES)
+                systemMessages.append(module.SYSTEM_MESSAGE)
+            if hasattr(module, 'ASSISTANT_NAME'):
+                assistantName = module.ASSISTANT_NAME
+
             module.Run()
-        return systemMessages
+        return systemMessages, assistantName
